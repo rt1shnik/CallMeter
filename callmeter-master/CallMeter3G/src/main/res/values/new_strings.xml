@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_1">VOTRE CONSOMMATION\nMOIS EN COURS</string>
+    <string name="incoming">APPELS\nRECUS</string>
+    <string name="outcoming">APPELS\nEMIS</string>
+    <string name="sms_received">SMSS\nRECUS</string>
+    <string name="sms_sent">SMS\nENVOYES</string>
+    <string name="internet">INTERNET</string>
+    <string name="back">RETOUR À L’ÉTAPE PRÉCÉDENTE</string>
+</resources>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2009-2013 Felix Bechstein --><!--
+		This file is part of Call Meter 3G. This program is free software; you
+		can redistribute it and/or modify it under the terms of the GNU
+		General Public License as published by the Free Software Foundation;
+		either version 3 of the License, or (at your option) any later
+		version.
+--><!--
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+		General Public License for more details. You should have received a
+		copy of the GNU General Public License along with this program; If
+		not, see <http://www.gnu.org/licenses/>.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:background="@drawable/background_root"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/ad"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/inpent"
+        android:layout_height="@dimen/indent" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:background="@color/inpent"
+        android:layout_height="@dimen/indent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/indent"
+        android:layout_marginBottom="@dimen/indent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/view_pager_layout"
+            android:layout_width="fill_parent"
+            android:layout_above="@+id/back"
+            android:layout_height="fill_parent">
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/titles"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:radius="7dp"
+                android:layout_alignParentBottom="true" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/titles" />
+        </RelativeLayout>
+
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="match_parent"
+            android:text="@string/back"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:background="@color/back_btn"
+            android:padding="3dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:textSize="@dimen/back_text"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,112 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.13.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+repositories {
+    maven { url 'https://raw.githubusercontent.com/felixb/ub0rlogg0r/mvn-repo/' }
+    maven { url 'https://raw.githubusercontent.com/Goddchen/mvn-repo/master/' }
+    mavenCentral()
+}
+
+ext {
+    gitVersion = null
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion '20'
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion 19
+        versionName "test"
+        versionCode 1
+        buildConfigField 'boolean', 'DEBUG_LOG', 'true'
+    }
+
+    lintOptions {
+        // checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+
+    signingConfigs {
+        if (project.hasProperty('releaseKeystorePassword')) {
+            release {
+                storeFile file("release.ks")
+                storePassword releaseKeystorePassword
+                keyAlias "jarsign"
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            versionNameSuffix "-debug"
+        }
+
+        nologDebug {
+            versionNameSuffix "-debug"
+            proguardFile 'proguard.cfg'
+            runProguard true
+            buildConfigField 'boolean', 'DEBUG_LOG', 'false'
+        }
+
+        logRelease {
+            versionNameSuffix "-logRelease"
+            runProguard false
+        }
+
+        release {
+            proguardFile 'proguard.cfg'
+            runProguard true
+            buildConfigField 'boolean', 'DEBUG_LOG', 'false'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.android.support:support-v4:20.+'
+    compile 'com.actionbarsherlock:actionbarsherlock:+@aar'
+    compile 'com.actionbarsherlock:viewpagerindicator:+'
+    compile 'de.ub0r.android.logg0r:logg0r:+'
+}
+
+task updateChangelog << {
+    def proc = 'shell/update-changelog.sh'.execute()
+    proc.in.eachLine {line -> println line}
+    proc.err.eachLine {line -> println 'ERROR: ' + line}
+    proc.waitFor()
+}
+
+task removeUnfinishedTranslations << {
+    def proc = 'shell/remove-unfinished-translations.sh'.execute()
+    proc.in.eachLine {line -> println line}
+    proc.err.eachLine {line -> println 'ERROR: ' + line}
+    proc.waitFor()
+}
+
+task readdUnfinishedTranslations << {
+    def proc = "git checkout CallMeter3G/src/main/res/values-*/*xml".execute()
+    proc.in.eachLine {line -> println line}
+    proc.err.eachLine {line -> println 'ERROR: ' + line}
+    proc.waitFor()
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'mergeReleaseResources') {
+//        task.dependsOn updateChangelog
+//        task.dependsOn removeUnfinishedTranslations
+    }
+}

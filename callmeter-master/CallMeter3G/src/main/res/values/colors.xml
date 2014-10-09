@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#712139</color>
+    <color name="calls_background">#36151e</color>
+    <color name="calls_text">#e35a55</color>
+    <color name="sms_text">#bfadb0</color>
+    <color name="line_below_sms_text">#aabfadb0</color>
+    <color name="back_btn">#dd4d342f</color>
+    <color name="transparent">#00000000</color>
+    <color name="background_fragment">#44000000</color>
+    <color name="inpent">#ee8b7d7d</color>
+</resources>
