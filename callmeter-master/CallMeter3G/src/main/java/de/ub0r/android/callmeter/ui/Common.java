@@ -215,6 +215,38 @@ public final class Common {
         return sb.toString();
     }
 
+    public static String getSize(final float value) {
+        StringBuilder sb = new StringBuilder();
+        if (value < CallMeter.BYTE_KB) {
+            sb.append(String.format("%d", (int)value));
+        } else if (value < CallMeter.BYTE_MB) {
+            sb.append(String.format("%d", (int)(value / CallMeter.BYTE_KB)));
+        } else if (value < CallMeter.BYTE_GB) {
+            sb.append(String.format("%d", (int)(value / CallMeter.BYTE_MB)));
+        } else if (value < CallMeter.BYTE_TB) {
+            sb.append(String.format("%d", (int)(value / CallMeter.BYTE_GB)));
+        } else {
+            sb.append(String.format("%d", ((int)value / CallMeter.BYTE_TB)));
+        }
+        return sb.toString();
+    }
+
+    public static String getUnits(final float value) {
+        StringBuilder sb = new StringBuilder();
+        if (value < CallMeter.BYTE_KB) {
+            sb.append(BYTE_UNITS_B);
+        } else if (value < CallMeter.BYTE_MB) {
+            sb.append(BYTE_UNITS_KB);
+        } else if (value < CallMeter.BYTE_GB) {
+            sb.append(BYTE_UNITS_MB);
+        } else if (value < CallMeter.BYTE_TB) {
+            sb.append(BYTE_UNITS_GB);
+        } else {
+            sb.append(BYTE_UNITS_TB);
+        }
+        return sb.toString();
+    }
+
     /**
      * Parse number of seconds to a readable time format.
      *

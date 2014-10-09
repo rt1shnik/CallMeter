@@ -70,8 +70,7 @@ import de.ub0r.android.logg0r.Log;
  *
  * @author flx
  */
-public final class PlansFragment extends SherlockListFragment implements OnClickListener,
-        OnItemLongClickListener, LoaderCallbacks<Cursor> {
+public final class PlansFragment extends SherlockListFragment implements LoaderCallbacks<Cursor> {
 
     /**
      * Tag for output.
@@ -303,9 +302,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
                 free = plan.getFree();
             }
 
-            if (plan.type == DataProvider.TYPE_DATA || plansFragment.mLine > 0) {
-                getViewTypeCount();
-            }
+
             if (plan.type != DataProvider.TYPE_SPACING && plan.type != DataProvider.TYPE_TITLE) {
                 if (plan.hasBa) {
                     long bd = plan.getBillDay(plan.type == DataProvider.TYPE_BILLPERIOD
@@ -585,7 +582,6 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         View v = inflater.inflate(R.layout.plans_fragment, container, false);
         vLoading = v.findViewById(R.id.loading);
         vImport = v.findViewById(R.id.import_default);
-        vImport.setOnClickListener(this);
 
         mIncomingCalls = (TextView) v.findViewById(R.id.incoming);
         mOutcomingCalls = (TextView) v.findViewById(R.id.outcoming);
@@ -593,7 +589,6 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         mSmsSent = (TextView) v.findViewById(R.id.sms_sent);
         mInternet = (TextView) v.findViewById(R.id.internet);
         mInternetUnits = (TextView) v.findViewById(R.id.internet_unit);
-        mInternetUnits.setVisibility(View.GONE);
         mMainLayout = v.findViewById(R.id.main_layout);
         mMainLayout.setVisibility(View.INVISIBLE);
         return v;
@@ -609,7 +604,6 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         PlansAdapter adapter = new PlansAdapter(getActivity(), now);
         adapter.setCurFragment(this);
         setListAdapter(adapter);
-        getListView().setOnItemLongClickListener(this);
 
         LoaderManager lm = getLoaderManager();
         if (lm.getLoader(uid) != null) {
@@ -677,62 +671,6 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         inflater.inflate(R.menu.menu_plans, menu);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onClick(final View v) {
-        switch (v.getId()) {
-            case R.id.import_default:
-                TrackingUtils.sendLongClick(this, "import_default", null);
-                final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this
-                        .getString(R.string.url_rulesets)));
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    Log.e(TAG, "no activity to load url", e);
-                    Toast.makeText(getActivity(),
-                            "no activity to load url: " + intent.getDataString(), Toast.LENGTH_LONG)
-                            .show();
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-                                   final int position, final long id) {
-        TrackingUtils.sendLongClick(this, "plan", id);
-        final Builder builder = new Builder(getActivity());
-        builder.setItems(R.array.dialog_edit_plan,
-                new android.content.DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, final int which) {
-                        Intent intent = null;
-                        switch (which) {
-                            case 0:
-                                TrackingUtils.sendLongClick(this, "plan#edit", id);
-                                intent = new Intent(PlansFragment.this.getActivity(),
-                                        PlanEdit.class);
-                                intent.setData(ContentUris.withAppendedId(
-                                        DataProvider.Plans.CONTENT_URI, id));
-                                PlansFragment.this.getActivity().startActivity(intent);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                });
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.show();
-        return true;
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
         Log.d(TAG, "onCreateLoader(", id, ",", args, ")");
@@ -798,14 +736,62 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         }
         vLoading.setVisibility(View.GONE);
         mMainLayout.setVisibility(View.VISIBLE);
-        try {
-            adapter.swapCursor(data);
-        } catch (IllegalStateException ex) {
-            Log.e(TAG, "could not set cursor to adapter", ex);
-            adapter.swapCursor(null);
+//        try {
+////            adapter.swapCursor(data);
+//        } catch (IllegalStateException ex) {
+//            Log.e(TAG, "could not set cursor to adapter", ex);
+//            adapter.swapCursor(null);
+//        }
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        data.moveToFirst();
+        String catname;
+        while (data.isAfterLast() == false) {
+
+            DataProvider.Plans.Plan plan = null;
+            if (data.getColumnIndex(DataProvider.Plans.SUM_COST) > 0) {
+                plan = new DataProvider.Plans.Plan(data);
+            } else {
+                plan = new DataProvider.Plans.Plan(data, p);
+            }
+//            if(plan.type == DataProvider.)
+
+            if(plan.id == 15){
+                mIncomingCalls.setText(Common.formatAmount(plan.type, plan.bpBa, true));
+            }
+            if(plan.id == 16){
+                mOutcomingCalls.setText(Common.formatAmount(plan.type, plan.bpBa, true));
+            }
+
+            if(plan.id == 19){
+                mSmsReceived.setText(String.valueOf(plan.bpCount));
+            }
+            if(plan.id == 20){
+                mSmsSent.setText(String.valueOf(plan.bpCount));
+            }
+
+            if(plan.id == 23){
+                mInternet.setText(Common.getSize(plan.bpBa));
+                mInternetUnits.setText(Common.getUnits(plan.bpBa));
+            }
+
+            data.moveToNext();
+
+//            if(data.get)
+//            catname = catcursor.getString(catcursor
+//                    .getColumnIndex(CatsDataBase.CATNAME));
+//            txtData.append(catname + " ");
+//            catcursor.moveToNext();
+
+
         }
+
+//        catcursor.close();
         setInProgress(-1);
+
+
     }
+
+
 
     @Override
     public void onLoaderReset(final Loader<Cursor> loader) {
