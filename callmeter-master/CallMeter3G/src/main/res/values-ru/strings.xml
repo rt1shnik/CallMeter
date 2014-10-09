@@ -242,6 +242,7 @@
   <string name="date_formats_1">ММ/ДД/ГГ</string>
   <string name="date_formats_2">ДД/ММ/ГГГГ</string>
   <string name="date_formats_3">ДД.ММ.ГГГГ</string>
+  <string name="date_formats_4">ДД.ММ.ГГГГ</string>
   <string name="x5_minute">5 минут</string>
   <string name="x10_minute">10 минут</string>
   <string name="x15_minute">15 минут</string>

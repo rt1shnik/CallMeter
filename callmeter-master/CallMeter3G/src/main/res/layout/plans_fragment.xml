@@ -15,43 +15,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background_fragment">
+    android:background="@color/transparent">
 
-    <ListView
-        android:visibility="invisible"
-        android:id="@id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@android:id/text1"
-        android:cacheColorHint="?android:attr/colorBackground"
-        android:choiceMode="singleChoice"
-        android:divider="?android:attr/colorBackground"
-        android:dividerHeight="0px"
-        android:drawSelectorOnTop="false"
-        android:fastScrollEnabled="true"
-        android:scrollingCache="true" />
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp">
 
-    <TextView
-        android:id="@+id/import_default"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/android:list"
-        android:layout_alignLeft="@id/android:list"
-        android:layout_alignRight="@id/android:list"
-        android:layout_alignTop="@id/android:list"
-        android:gravity="center"
-        android:singleLine="false"
-        android:text="@string/import_rules_empty"
-        android:visibility="gone" />
+        <ListView
+            android:visibility="invisible"
+            android:id="@id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@android:id/text1"
+            android:cacheColorHint="?android:attr/colorBackground"
+            android:choiceMode="singleChoice"
+            android:divider="?android:attr/colorBackground"
+            android:dividerHeight="0px"
+            android:drawSelectorOnTop="false"
+            android:fastScrollEnabled="true"
+            android:scrollingCache="true" />
+
+        <TextView
+            android:id="@+id/import_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/android:list"
+            android:layout_alignLeft="@id/android:list"
+            android:layout_alignRight="@id/android:list"
+            android:layout_alignTop="@id/android:list"
+            android:gravity="center"
+            android:singleLine="false"
+            android:text="@string/import_rules_empty"
+            android:visibility="gone" />
+
+
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/android:list"
-        android:layout_alignLeft="@id/android:list"
-        android:layout_alignRight="@id/android:list"
-        android:layout_alignTop="@id/android:list"
+        android:layout_centerInParent="true"
         android:gravity="center">
 
         <ProgressBar
@@ -65,209 +69,221 @@
             android:text="@string/loading" />
     </LinearLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
+        android:paddingBottom="10dp"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:paddingBottom="10dp"
-            android:lineSpacingMultiplier="0.7"
-            android:layout_marginRight="40dp"
-            android:text="@string/title_1"
-            android:textSize="@dimen/date"
-            android:textColor="@android:color/white"
-            android:layout_height="wrap_content" />
-
-        <View
-            android:layout_width="match_parent"
-            android:background="@android:color/black"
-            android:layout_height="1dp" />
-
         <LinearLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
-            android:paddingRight="50dp"
-            android:paddingLeft="50dp"
-            android:paddingBottom="5dp"
-            android:paddingTop="5dp"
-            android:background="@color/calls_background"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:layout_gravity="center_vertical"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="2H46"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/calls_count"
-                    android:textColor="@android:color/white"
-                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@android:color/black"
+                    android:layout_height="1dp" />
+            </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/incoming"
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:paddingRight="50dp"
+                android:paddingLeft="50dp"
+                android:paddingBottom="5dp"
+                android:background="@color/calls_background"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:textSize="@dimen/calls_text"
-                    android:textColor="@color/calls_text"
-                    android:layout_height="wrap_content" />
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/incoming"
+                        android:singleLine="true"
+                        android:layout_width="wrap_content"
+                        android:text="2H46"
+                        android:lineSpacingMultiplier="0.9"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/calls_count"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="@string/incoming"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/calls_text"
+                        android:textColor="@color/calls_text"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:id="@+id/outcoming"
+                        android:text="2H30"
+                        android:lineSpacingMultiplier="0.9"
+                        android:singleLine="true"
+                        android:layout_gravity="center_horizontal"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/calls_count"
+                        android:textColor="@android:color/white"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="@string/outcoming"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/calls_text"
+                        android:textColor="@color/calls_text"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:paddingBottom="5dp"
+                android:orientation="horizontal"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="2H30"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/calls_count"
-                    android:textColor="@android:color/white"
-                    android:layout_height="wrap_content" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/outcoming"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:gravity="center_horizontal"
-                    android:textSize="@dimen/calls_text"
-                    android:textColor="@color/calls_text"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_margin="5dp"
-            android:paddingTop="10dp"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp"
-            android:paddingBottom="5dp"
-            android:orientation="horizontal"
-            android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/sms_receive"
+                        android:layout_width="@dimen/circle_diameter"
+                        android:textSize="@dimen/sms_count"
+                        android:text="26"
+                        android:fontFamily="sans-serif-light"
+                        android:paddingBottom="5dp"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/background_sms_circle"
+                        android:layout_height="@dimen/circle_diameter" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:gravity="center_horizontal"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="@string/sms_received"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sms_text"
+                        android:textColor="@color/sms_text"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="@dimen/circle_diameter"
-                    android:textSize="@dimen/sms_count"
-                    android:text="26"
-                    android:paddingBottom="5dp"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/background_sms_circle"
-                    android:layout_height="@dimen/circle_diameter" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/sms_received"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:textSize="@dimen/sms_text"
-                    android:textColor="@color/sms_text"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/sms_sent"
+                        android:layout_width="@dimen/circle_diameter"
+                        android:textSize="@dimen/sms_count"
+                        android:text="26"
+                        android:fontFamily="sans-serif-light"
+                        android:paddingBottom="5dp"
+                        android:gravity="center"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/background_sms_circle"
+                        android:layout_height="@dimen/circle_diameter" />
 
-                <TextView
-                    android:layout_width="@dimen/circle_diameter"
-                    android:textSize="@dimen/sms_count"
-                    android:text="26"
-                    android:paddingBottom="5dp"
-                    android:gravity="center"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/background_sms_circle"
-                    android:layout_height="@dimen/circle_diameter" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="@string/sms_sent"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sms_text"
+                        android:textColor="@color/sms_text"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/sms_sent"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:textSize="@dimen/sms_text"
-                    android:textColor="@color/sms_text"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:layout_width="@dimen/circle_diameter"
-                    android:paddingBottom="5dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/background_sms_circle"
-                    android:layout_height="@dimen/circle_diameter">
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_height="wrap_content">
+                        android:layout_width="@dimen/circle_diameter"
+                        android:paddingBottom="5dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/background_sms_circle"
+                        android:layout_height="@dimen/circle_diameter">
 
-                        <TextView
-                            android:id="@+id/internet"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:textSize="@dimen/sms_count"
-                            android:text="69"
-                            android:textColor="@android:color/white"
-                            android:layout_height="wrap_content" />
+                            android:layout_centerInParent="true"
+                            android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_toRightOf="@id/internet"
-                            android:layout_alignBaseline="@id/internet"
-                            android:layout_width="wrap_content"
-                            android:textColor="@android:color/white"
-                            android:text="mb"
-                            android:textSize="@dimen/internet_units"
-                            android:layout_height="wrap_content" />
+                            <TextView
+                                android:id="@+id/internet"
+                                android:layout_width="wrap_content"
+                                android:fontFamily="sans-serif-light"
+                                android:textSize="@dimen/sms_count"
+                                android:text="69"
+                                android:textColor="@android:color/white"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/internet_unit"
+                                android:layout_toRightOf="@id/internet"
+                                android:layout_alignBaseline="@id/internet"
+                                android:layout_width="wrap_content"
+                                android:textColor="@android:color/white"
+                                android:text="mb"
+                                android:textSize="@dimen/internet_units"
+                                android:layout_height="wrap_content" />
+                        </RelativeLayout>
+
+
                     </RelativeLayout>
 
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:text="@string/internet"
-                    android:gravity="center_horizontal"
-                    android:textSize="@dimen/sms_text"
-                    android:textColor="@color/sms_text"
-                    android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:text="@string/internet"
+                        android:gravity="center_horizontal"
+                        android:textSize="@dimen/sms_text"
+                        android:textColor="@color/sms_text"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginEnd="10dp"
+                android:background="@color/line_below_sms_text"
+                android:layout_height="1dp" />
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:background="@color/line_below_sms_text"
-            android:layout_height="2dp" />
-    </LinearLayout>
-
-
+    </ScrollView>
 </RelativeLayout>

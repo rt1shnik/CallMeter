@@ -42,6 +42,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,14 +134,20 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
      */
     private static boolean prefsNoAds = true;
 
+    private static TextView mTitle;
+
     /**
      * {@link ViewPager}.
      */
-    private ViewPager pager;
+    private static ViewPager pager;
     /**
      * {@link PlansFragmentAdapter}.
      */
     private PlansFragmentAdapter fadapter;
+
+    public PlansFragmentAdapter getFragmentAdapter() {
+        return fadapter;
+    }
 
     /**
      * {@link Handler} for handling messages from background process.
@@ -260,7 +267,7 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
      *
      * @author flx
      */
-    private static class PlansFragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
+    public static class PlansFragmentAdapter extends FragmentPagerAdapter implements IconPagerAdapter {
         /**
          * {@link FragmentManager} .
          */
@@ -345,8 +352,8 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
             Common.setDateFormat(context);
             final int l = positions.length;
             titles = new String[l];
-            titles[l - 1] = context.getString(R.string.now);
-//            titles[l - 1] = context.getString(R.string.logs);
+            titles[l - 1] = context.getString(R.string.title_curr);
+//            titles[l - 2] = context.getString(R.string.title_prev);
         }
 
         /**
@@ -360,6 +367,12 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
             String name = makeFragmentName(container.getId(), position);
             return mFragmentManager.findFragmentByTag(name);
         }
+
+        public Fragment getCurFragment() {
+            String name = makeFragmentName(pager.getId(), pager.getCurrentItem());
+            return mFragmentManager.findFragmentByTag(name);
+        }
+
 
         /**
          * Get a {@link Fragment}'s name.
@@ -393,6 +406,7 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         public Fragment getItem(final int position) {
             return PlansFragment.newInstance(position, positions[position]);
         }
+
 
         /**
          * Get position of home {@link Fragment}.
@@ -442,10 +456,10 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         //noinspection ConstantConditions
         if (p.getAll().isEmpty()) {
             // show intro
-            startActivity(new Intent(this, IntroActivity.class));
+//            startActivity(new Intent(this, IntroActivity.class));
             // set date of recordings to beginning of last month
             Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, 0);
+            c.set(Calendar.DAY_OF_MONTH, 1);
             c.add(Calendar.MONTH, -1);
             Log.i(TAG, "set date of recording: " + c);
             p.edit().putLong(Preferences.PREFS_DATE_BEGIN, c.getTimeInMillis()).commit();
@@ -465,7 +479,11 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         indicator.setViewPager(pager);
 
         pager.setCurrentItem(fadapter.getHomeFragmentPos());
+        fadapter.notifyDataSetChanged();
         indicator.setOnPageChangeListener(this);
+
+        mTitle = (TextView) findViewById(R.id.title);
+        mTitle.setText(R.string.title_curr);
     }
 
     /**
@@ -551,6 +569,12 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
 
         if (!prefsNoAds) {
             findViewById(R.id.ad).setVisibility(View.VISIBLE);
+        }
+
+        if (position > 0) {
+            mTitle.setText(R.string.title_curr);
+        } else {
+            mTitle.setText(R.string.title_prev);
         }
     }
 

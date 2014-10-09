@@ -73,23 +73,48 @@ import de.ub0r.android.logg0r.Log;
 public final class PlansFragment extends SherlockListFragment implements OnClickListener,
         OnItemLongClickListener, LoaderCallbacks<Cursor> {
 
-    /** Tag for output. */
+    /**
+     * Tag for output.
+     */
     private static final String TAG = "PlansFragment";
-    /** Run the dummy? */
+    /**
+     * Run the dummy?
+     */
     private static boolean doDummy = true;
-    /** Show today stats. */
+    /**
+     * Show today stats.
+     */
     private static boolean showToday = false;
-    /** Show total stats. */
+    /**
+     * Show total stats.
+     */
     private static boolean showTotal = true;
-    /** Hide zero plans. */
+    /**
+     * Hide zero plans.
+     */
     private static boolean hideZero = false;
-    /** Hide no cost plans. */
+    /**
+     * Hide no cost plans.
+     */
     private static boolean hideNoCost = false;
-    /** Ignore query requests. */
+    /**
+     * Ignore query requests.
+     */
     private boolean ignoreQuery = false;
 
-    /** Unique id for dummy loader. */
+    /**
+     * Unique id for dummy loader.
+     */
     private static final int UID_DUMMY = -3;
+
+    public TextView mIncomingCalls;
+    public TextView mOutcomingCalls;
+    public TextView mSmsReceived;
+    public TextView mSmsSent;
+    public TextView mInternet;
+    public TextView mInternetUnits;
+    public View mMainLayout;
+    public int mLine = 0;
 
     /**
      * Adapter binding plans to View.
@@ -98,6 +123,12 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
      */
     private static class PlansAdapter extends ResourceCursorAdapter {
 
+        private PlansFragment plansFragment;
+
+        public void setCurFragment(PlansFragment fragment) {
+            plansFragment = fragment;
+        }
+
         /**
          * View holder.
          *
@@ -105,46 +136,78 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
          */
         private class ViewHolder {
 
-            /** {@link View}s. */
+            /**
+             * {@link View}s.
+             */
             View vPeriodLayout, vContent, vSpacer;
-            /** {@link TextView}s. */
+            /**
+             * {@link TextView}s.
+             */
             TextView tvBigtitle, tvPeriod, tvBilldayLable, tvTitle, tvData;
-            /** {@link ProgressBar}s. */
+            /**
+             * {@link ProgressBar}s.
+             */
             ProgressBar pbPeriod, pbLimitGreen, pbLimitYellow, pbLimitRed;
         }
 
-        /** {@link SharedPreferences}. */
+        /**
+         * {@link SharedPreferences}.
+         */
         private final SharedPreferences p;
-        /** {@link Editor}. */
+        /**
+         * {@link Editor}.
+         */
         private final Editor e;
-        /** Does the {@link Editor} needs commit? */
+        /**
+         * Does the {@link Editor} needs commit?
+         */
         private boolean isDirty = false;
 
-        /** Now. */
+        /**
+         * Now.
+         */
         private final long now;
 
-        /** Text sizes. */
+        /**
+         * Text sizes.
+         */
         private static int textSize, textSizeBigTitle, textSizeTitle, textSizeSpacer, textSizePBar,
                 textSizePBarBP;
 
-        /** Separator for the data. */
+        /**
+         * Separator for the data.
+         */
         private static String delimiter = " | ";
-        /** Selected currency format. */
+        /**
+         * Selected currency format.
+         */
         private static String currencyFormat = "$%.2f";
-        /** Show hours and days. */
+        /**
+         * Show hours and days.
+         */
         private static boolean pShowHours = true;
-        /** Show target bill day. */
+        /**
+         * Show target bill day.
+         */
         private static boolean pShowTargetBillDay = false;
-        /** First/last bill day shown. */
+        /**
+         * First/last bill day shown.
+         */
         private static int billDayResId = R.string.billday_;
 
-        /** Prepaid plan? */
+        /**
+         * Prepaid plan?
+         */
         private static boolean prepaid;
 
-        /** Visibility for {@link ProgressBar}s. */
+        /**
+         * Visibility for {@link ProgressBar}s.
+         */
         private final int progressBarVisability;
 
-        /** Need a reload of preferences. */
+        /**
+         * Need a reload of preferences.
+         */
         private static boolean needReloadPrefs = true;
 
         /**
@@ -180,7 +243,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
          * @param context {@link Activity}
          * @param n       now
          */
-        public PlansAdapter(final Activity context, final long n) {
+        private PlansAdapter(final Activity context, final long n) {
             super(context, R.layout.plans_item, null, true);
             now = n;
             p = PreferenceManager.getDefaultSharedPreferences(context);
@@ -190,6 +253,10 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
             } else {
                 progressBarVisability = View.VISIBLE;
             }
+//            Plans plans = (Plans) context;
+//            Plans.PlansFragmentAdapter plansFragmentAdapter = plans.getFragmentAdapter();
+//            plansFragment = (PlansFragment) plansFragmentAdapter.getCurFragment();
+//            plansFragment.mLine = 0;
         }
 
         /**
@@ -197,6 +264,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
          */
         @Override
         public void bindView(final View view, final Context context, final Cursor cursor) {
+            plansFragment.mLine++;
             ViewHolder holder = (ViewHolder) view.getTag();
             if (holder == null) {
                 holder = new ViewHolder();
@@ -235,6 +303,9 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
                 free = plan.getFree();
             }
 
+            if (plan.type == DataProvider.TYPE_DATA || plansFragment.mLine > 0) {
+                getViewTypeCount();
+            }
             if (plan.type != DataProvider.TYPE_SPACING && plan.type != DataProvider.TYPE_TITLE) {
                 if (plan.hasBa) {
                     long bd = plan.getBillDay(plan.type == DataProvider.TYPE_BILLPERIOD
@@ -272,7 +343,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
                                     + "' and free=" + free, ex);
                             s = "$";
                         }
-                        spb.append("(" + s + ")");
+//                        spb.append("(" + s + ")");
                     }
                     if (cost > 0f) {
                         String s;
@@ -283,7 +354,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
                                     + "' and cost=" + cost, ex);
                             s = "$";
                         }
-                        spb.append(" " + s);
+//                        spb.append(" " + s);
                     }
                 }
 //                if (plan.limit > 0) {
@@ -361,11 +432,31 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
             }
             if (tvCache != null && pbCache != null) {
                 if (spb.length() > 0) {
+                    switch (plansFragment.mLine) {
+                        case 4:
+                            plansFragment.mIncomingCalls.setText(spb);
+                            break;
+                        case 5:
+                            plansFragment.mOutcomingCalls.setText(spb);
+                            break;
+                        case 8:
+                            plansFragment.mSmsReceived.setText(spb);
+                            break;
+                        case 9:
+                            plansFragment.mSmsSent.setText(spb);
+                            break;
+                        case 14:
+                            plansFragment.mInternet.setText(spb);
+                            break;
+                    }
                     tvCache.setText(spb);
                 } else {
                     tvCache.setText(null);
                 }
                 if (textSize > 0) {
+                    if (plansFragment.mLine == 14) {
+                        plansFragment.mInternetUnits.setText(textSize);
+                    }
                     tvCache.setTextSize(textSize);
                 }
                 if (plan.limit == 0) {
@@ -410,14 +501,22 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         }
     }
 
-    /** This fragments time stamp. */
+    /**
+     * This fragments time stamp.
+     */
     private long now;
-    /** Unique id of this fragment. */
+    /**
+     * Unique id of this fragment.
+     */
     private int uid;
-    /** Is loader running? */
+    /**
+     * Is loader running?
+     */
     private boolean inProgress;
 
-    /** Handle for view. */
+    /**
+     * Handle for view.
+     */
     private View vLoading, vImport;
 
     /**
@@ -482,11 +581,21 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
      */
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-            final Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.plans_fragment, container, false);
         vLoading = v.findViewById(R.id.loading);
         vImport = v.findViewById(R.id.import_default);
         vImport.setOnClickListener(this);
+
+        mIncomingCalls = (TextView) v.findViewById(R.id.incoming);
+        mOutcomingCalls = (TextView) v.findViewById(R.id.outcoming);
+        mSmsReceived = (TextView) v.findViewById(R.id.sms_receive);
+        mSmsSent = (TextView) v.findViewById(R.id.sms_sent);
+        mInternet = (TextView) v.findViewById(R.id.internet);
+        mInternetUnits = (TextView) v.findViewById(R.id.internet_unit);
+        mInternetUnits.setVisibility(View.GONE);
+        mMainLayout = v.findViewById(R.id.main_layout);
+        mMainLayout.setVisibility(View.INVISIBLE);
         return v;
     }
 
@@ -496,7 +605,9 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mLine = 0;
         PlansAdapter adapter = new PlansAdapter(getActivity(), now);
+        adapter.setCurFragment(this);
         setListAdapter(adapter);
         getListView().setOnItemLongClickListener(this);
 
@@ -595,7 +706,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
      */
     @Override
     public boolean onItemLongClick(final AdapterView<?> parent, final View view,
-            final int position, final long id) {
+                                   final int position, final long id) {
         TrackingUtils.sendLongClick(this, "plan", id);
         final Builder builder = new Builder(getActivity());
         builder.setItems(R.array.dialog_edit_plan,
@@ -629,6 +740,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         PlansAdapter adapter = (PlansAdapter) getListAdapter();
         if ((adapter == null || adapter.getCount() == 0) && vLoading != null) {
             vLoading.setVisibility(View.VISIBLE);
+            mMainLayout.setVisibility(View.INVISIBLE);
         }
 
         if (id == UID_DUMMY) {
@@ -685,6 +797,7 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
             vImport.setVisibility(View.VISIBLE);
         }
         vLoading.setVisibility(View.GONE);
+        mMainLayout.setVisibility(View.VISIBLE);
         try {
             adapter.swapCursor(data);
         } catch (IllegalStateException ex) {
@@ -702,5 +815,11 @@ public final class PlansFragment extends SherlockListFragment implements OnClick
         } catch (Exception e) {
             Log.w(TAG, "error removing cursor", e);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mLine = 0;
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="title_1">VOTRE CONSOMMATION\nMOIS EN COURS</string>
-    <string name="incoming">APPELS\nRECUS</string>
-    <string name="outcoming">APPELS\nEMIS</string>
-    <string name="sms_received">SMSS\nRECUS</string>
-    <string name="sms_sent">SMS\nENVOYES</string>
-    <string name="internet">INTERNET</string>
-    <string name="back">RETOUR À L’ÉTAPE PRÉCÉDENTE</string>
+    <string name="title_prev"  translatable="false">VOTRE CONSOMMATION\nMOIS EN COURS</string>
+    <string name="title_curr"  translatable="false">VOTRE CONSOMMATION\nMOIS PRÉCÉDENTS</string>
+    <string name="incoming"  translatable="false">APPELS\nRECUS</string>
+    <string name="outcoming"  translatable="false">APPELS\nEMIS</string>
+    <string name="sms_received"  translatable="false">SMS\nRECUS</string>
+    <string name="sms_sent"  translatable="false">SMS\nENVOYES</string>
+    <string name="internet"  translatable="false">INTERNET</string>
+    <string name="back"  translatable="false">RETOUR À L’ÉTAPE PRÉCÉDENTE</string>
 </resources>

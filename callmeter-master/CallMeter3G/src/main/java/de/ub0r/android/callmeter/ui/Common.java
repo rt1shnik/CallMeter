@@ -174,7 +174,9 @@ public final class Common {
                 billDay.setTimeInMillis(billday);
                 return formatDate(context, billperiod, billDay);
             case DataProvider.TYPE_CALL:
-                return formatAmount(pType, amount, showHours) + " (" + count + ")";
+//                return formatAmount(pType, amount, showHours) + " (" + count + ")";
+                String text = formatAmount(pType, amount, showHours);
+                return formatAmount(pType, amount, showHours);
             case DataProvider.TYPE_DATA:
             case DataProvider.TYPE_SMS:
             case DataProvider.TYPE_MMS:
@@ -241,22 +243,22 @@ public final class Common {
         }
         if (h > 0 || d > 0) {
             if (h < CallMeter.TEN) {
-                ret += "0";
+//                ret += "0";
             }
-            ret += h + ":";
+            ret += h + "H";
         }
         if (m > 0 || h > 0 || d > 0) {
             if (m < CallMeter.TEN && h > 0) {
-                ret += "0";
+//                ret += "0";
             }
-            ret += m + ":";
+            ret += m + "";
         }
-        if (s < CallMeter.TEN && (m > 0 || h > 0 || d > 0)) {
-            ret += "0";
-        }
-        ret += s;
+//        if (s < CallMeter.TEN && (m > 0 || h > 0 || d > 0)) {
+//            ret += "0";
+//        }
+//        ret += s;
         if (d == 0 && h == 0 && m == 0) {
-            ret += "s";
+            ret += "";
         }
         return ret;
     }
