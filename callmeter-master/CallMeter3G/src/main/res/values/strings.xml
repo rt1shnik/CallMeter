@@ -207,6 +207,7 @@
 	<string name="reset_data_data_">Reset traffic too.</string>
 	<string name="reset_data_progr1">Recalculating statistics ...\n\n(This may take some time!)</string>
 	<string name="reset_data_progr2">Recalculating statistics ...</string>
+    <string name="reset_data_progr3" translatable="false">CHARGEMENT EN COURS</string>
 	<string name="contacts_">Contacts</string>
 	<string name="clear_">Clear</string>
 	<string name="help_">Help</string>

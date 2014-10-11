@@ -42,6 +42,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -144,6 +145,8 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
      * {@link PlansFragmentAdapter}.
      */
     private PlansFragmentAdapter fadapter;
+    private final static String IS_FIRST = "isFirstTime";
+    private SharedPreferences myPref;
 
     public PlansFragmentAdapter getFragmentAdapter() {
         return fadapter;
@@ -157,6 +160,7 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         private boolean inProgressRunner = false;
         /** {@link ProgressDialog} showing LogMatcher's status. */
         private ProgressDialog statusMatcher = null;
+
         /** Is statusMatcher a {@link ProgressDialog}? */
         private boolean statusMatcherProgress = false;
 
@@ -178,11 +182,26 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                     Plans.this.setInProgress(-1);
                     break;
                 case MSG_BACKGROUND_STOP_MATCHER:
+                    if (statusMatcher != null && statusMatcher.isShowing()) {
+                        try {
+                            statusMatcher.dismiss();
+                        } catch (IllegalArgumentException e) {
+                            Log.e(TAG, "error dismissing dialog", e);
+                        }
+                        statusMatcher = null;
+                    }
+
                     Plans.this.setInProgress(-1);
+                    Boolean isFirst = myPref.getBoolean(IS_FIRST, true);
+                    if(isFirst){
+                        init();
+                        myPref.edit().putBoolean(IS_FIRST, false).commit();
+                    }
                     Fragment f = Plans.this.fadapter.getActiveFragment(Plans.this.pager,
                             Plans.this.fadapter.getHomeFragmentPos());
                     if (f != null && f instanceof PlansFragment) {
                         ((PlansFragment) f).requery(true);
+//                        ((PlansFragment) f).requery(false);
                     }
                     break;
                 case MSG_BACKGROUND_PROGRESS_MATCHER:
@@ -195,14 +214,16 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                         if (statusMatcher == null || !this.statusMatcherProgress) {
                             final ProgressDialog dold = statusMatcher;
                             statusMatcher = new ProgressDialog(Plans.this);
+                            statusMatcher.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dialog));
                             statusMatcher.setCancelable(true);
                             if (recalc == null) {
-                                recalc = Plans.this.getString(R.string.reset_data_progr2);
+                                recalc = Plans.this.getString(R.string.reset_data_progr3);
                             }
                             statusMatcher.setMessage(recalc);
                             statusMatcher.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                             statusMatcher.setMax(msg.arg2);
                             statusMatcher.setIndeterminate(false);
+
                             statusMatcherProgress = true;
                             Log.d(TAG, "showing dialog..");
                             try {
@@ -217,9 +238,12 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                         statusMatcher.setProgress(msg.arg1);
                     }
                     if (recalc == null) {
-                        recalc = Plans.this.getString(R.string.reset_data_progr2);
+                        recalc = Plans.this.getString(R.string.reset_data_progr3);
                     }
-
+                    statusMatcher.setMax(msg.arg2);
+                    statusMatcher.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    statusMatcher.setProgress(msg.arg1);
+                    statusMatcher.show();
                     break;
                 default:
                     break;
@@ -227,11 +251,14 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
 
             if (inProgressRunner) {
                 if (statusMatcher == null
-                        || (msg.arg1 <= 0 && !this.statusMatcher.isShowing())) {
+                        || (msg.arg1 <= 0 && !statusMatcher.isShowing())) {
                     statusMatcher = new ProgressDialog(Plans.this);
+//                    statusMatcher = (ProgressBar) Plans.this.findViewById(R.id.progressbar);
                     statusMatcher.setCancelable(true);
-                    statusMatcher.setMessage(Plans.this.getString(R.string.reset_data_progr1));
+                    statusMatcher.setMessage(Plans.this.getString(R.string.reset_data_progr3));
                     statusMatcher.setIndeterminate(true);
+                    statusMatcher.setProgressDrawable(getResources().getDrawable(R.drawable.progress_dialog));
+
                     statusMatcherProgress = false;
                     try {
                         statusMatcher.show();
@@ -240,14 +267,14 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                     }
                 }
             } else {
-                if (statusMatcher != null && statusMatcher.isShowing()) {
-                    try {
-                        statusMatcher.dismiss();
-                    } catch (IllegalArgumentException e) {
-                        Log.e(TAG, "error dismissing dialog", e);
-                    }
-                    statusMatcher = null;
-                }
+//                if (statusMatcher != null && statusMatcher.isShowing()) {
+//                    try {
+//                        statusMatcher.dismiss();
+//                    } catch (IllegalArgumentException e) {
+//                        Log.e(TAG, "error dismissing dialog", e);
+//                    }
+//                    statusMatcher = null;
+//                }
             }
         }
     };
@@ -333,6 +360,7 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                     Log.d(TAG, "bill periods: ", bps.size());
                     if (!bps.isEmpty()) {
                         bps.remove(bps.size() - 1);
+                        bps.remove(bps.size() - 1);
                         list.addAll(bps);
                     }
                     c.close();
@@ -368,10 +396,10 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
             return mFragmentManager.findFragmentByTag(name);
         }
 
-        public Fragment getCurFragment() {
-            String name = makeFragmentName(pager.getId(), pager.getCurrentItem());
-            return mFragmentManager.findFragmentByTag(name);
-        }
+//        public Fragment getCurFragment() {
+//            String name = makeFragmentName(pager.getId(), pager.getCurrentItem());
+//            return mFragmentManager.findFragmentByTag(name);
+//        }
 
 
         /**
@@ -453,13 +481,43 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         setContentView(R.layout.plans);
 
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        if (p.getAll().isEmpty()) {
+            // show intro
+//            startActivity(new Intent(this, IntroActivity.class));
+            // set date of recordings to beginning of last month
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_MONTH, 0);
+            c.add(Calendar.MONTH, -1);
+            Log.i(TAG, "set date of recording: " + c);
+            p.edit().putLong(Preferences.PREFS_DATE_BEGIN, c.getTimeInMillis()).commit();
+        }
+
+        myPref = getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        Boolean isFirst = myPref.getBoolean(IS_FIRST, true);
+        if(!isFirst){
+            init();
+        }
+
+//        ProgressDialog progressBar = new ProgressDialog(this);
+//        progressBar.setMax(100);
+//        progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        progressBar.setMessage("fgasdfgsdfgadf");
+//        progressBar.setProgress(50);
+//        progressBar.show();
+//        init();
+
+
+    }
+
+    private void init() {
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
         //noinspection ConstantConditions
         if (p.getAll().isEmpty()) {
             // show intro
 //            startActivity(new Intent(this, IntroActivity.class));
             // set date of recordings to beginning of last month
             Calendar c = Calendar.getInstance();
-            c.set(Calendar.DAY_OF_MONTH, 1);
+            c.set(Calendar.DAY_OF_MONTH, 0);
             c.add(Calendar.MONTH, -1);
             Log.i(TAG, "set date of recording: " + c);
             p.edit().putLong(Preferences.PREFS_DATE_BEGIN, c.getTimeInMillis()).commit();
@@ -467,8 +525,8 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
 
         ChangelogHelper.showChangelog(this, getString(R.string.changelog_),
                 getString(R.string.app_name), R.array.updates, R.array.notes_from_dev);
-
-//        prefsNoAds = DonationHelper.hideAds(this);
+//        progressDialog = new ProgressDialog(this);
+//          prefsNoAds = DonationHelper.hideAds(this);
 
         pager = (ViewPager) findViewById(R.id.pager);
 
@@ -478,8 +536,8 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         CirclePageIndicator indicator = (CirclePageIndicator) findViewById(R.id.titles);
         indicator.setViewPager(pager);
 
-        pager.setCurrentItem(fadapter.getHomeFragmentPos());
-        fadapter.notifyDataSetChanged();
+//        pager.setCurrentItem();
+        indicator.setCurrentItem(fadapter.getHomeFragmentPos());
         indicator.setOnPageChangeListener(this);
 
         mTitle = (TextView) findViewById(R.id.title);
@@ -600,11 +658,11 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
             progressCount = 0;
         }
 
-        Log.d(TAG, "progressCount: ", progressCount);
-        if (progressCount == 0) {
-            setSupportProgressBarIndeterminateVisibility(false);
-        } else {
-            setSupportProgressBarIndeterminateVisibility(true);
-        }
+//        Log.d(TAG, "progressCount: ", progressCount);
+//        if (progressCount == 0) {
+//            setSupportProgressBarIndeterminateVisibility(false);
+//        } else {
+//            setSupportProgressBarIndeterminateVisibility(true);
+//        }
     }
 }

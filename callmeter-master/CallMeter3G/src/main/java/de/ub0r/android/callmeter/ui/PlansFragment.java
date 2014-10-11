@@ -676,13 +676,13 @@ public final class PlansFragment extends SherlockListFragment implements LoaderC
         Log.d(TAG, "onCreateLoader(", id, ",", args, ")");
         setInProgress(1);
         PlansAdapter adapter = (PlansAdapter) getListAdapter();
-        if ((adapter == null || adapter.getCount() == 0) && vLoading != null) {
+//        if ((adapter == null || adapter.getCount() == 0) && vLoading != null) {
             vLoading.setVisibility(View.VISIBLE);
             mMainLayout.setVisibility(View.INVISIBLE);
-        }
+//        }
 
         if (id == UID_DUMMY) {
-            ignoreQuery = true;
+//            ignoreQuery = true;
             final String where = PreferenceManager.getDefaultSharedPreferences(getActivity())
                     .getString("dummy_where", null);
             return new CursorLoader(getActivity(), DataProvider.Plans.CONTENT_URI,
@@ -756,10 +756,14 @@ public final class PlansFragment extends SherlockListFragment implements LoaderC
 //            if(plan.type == DataProvider.)
 
             if(plan.id == 15){
-                mIncomingCalls.setText(Common.formatAmount(plan.type, plan.bpBa, true));
+                String text = Common.formatAmount(plan.type, plan.bpBa, true);
+                text = text + "(" + String.valueOf(plan.bpCount) + ")";
+                mIncomingCalls.setText(text);
             }
             if(plan.id == 16){
-                mOutcomingCalls.setText(Common.formatAmount(plan.type, plan.bpBa, true));
+                String text = Common.formatAmount(plan.type, plan.bpBa, true);
+                text = text + "(" + String.valueOf(plan.bpCount) + ")";
+                mOutcomingCalls.setText(text);
             }
 
             if(plan.id == 19){
@@ -787,7 +791,6 @@ public final class PlansFragment extends SherlockListFragment implements LoaderC
 
 //        catcursor.close();
         setInProgress(-1);
-
 
     }
 
