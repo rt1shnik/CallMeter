@@ -137,6 +137,8 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
 
     private static TextView mTitle;
 
+    private View mBackBtn;
+
     /**
      * {@link ViewPager}.
      */
@@ -479,6 +481,14 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.plans);
+
+        mBackBtn = findViewById(R.id.bottomLayout);
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
         if (p.getAll().isEmpty()) {

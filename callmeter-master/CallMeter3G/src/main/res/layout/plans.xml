@@ -12,11 +12,17 @@
 		copy of the GNU General Public License along with this program; If
 		not, see <http://www.gnu.org/licenses/>.
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
+    android:orientation="vertical"
     android:background="@drawable/background_root"
     android:layout_height="fill_parent">
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/launch_header" />
 
     <LinearLayout
         android:id="@+id/ad"
@@ -29,22 +35,26 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_centerVertical="true"
         android:layout_height="wrap_content">
 
-        <TextView
+        <RelativeLayout
             android:id="@+id/title"
-            android:paddingTop="10dp"
             android:layout_width="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="20dp"
-            android:paddingBottom="10dp"
-            android:lineSpacingMultiplier="0.7"
-            android:layout_marginRight="40dp"
-            android:text="@string/title_prev"
-            android:textSize="@dimen/date"
-            android:textColor="@android:color/white"
-            android:layout_height="wrap_content" />
+            android:layout_height="80dp">
+
+            <TextView
+                android:paddingTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="20dp"
+                android:paddingBottom="10dp"
+                android:lineSpacingMultiplier="0.7"
+                android:layout_marginRight="40dp"
+                android:text="@string/title_prev"
+                android:textSize="@dimen/date"
+                android:textColor="@android:color/white"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
 
         <RelativeLayout
             android:id="@+id/view_pager_layout"
@@ -67,22 +77,32 @@
         </RelativeLayout>
 
 
-        <TextView
-            android:id="@+id/back"
+        <LinearLayout
+            android:id="@+id/bottomLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/view_pager_layout"
-            android:layout_width="match_parent"
-            android:text="@string/back"
-            android:layout_marginTop="30dp"
-            android:gravity="center"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:textColor="@android:color/white"
-            android:background="@color/back_btn"
-            android:layout_marginBottom="10dp"
-            android:textSize="@dimen/back_text"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_height="wrap_content" />
+            android:orientation="vertical"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp" >
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/back_btn"
+                android:gravity="center_vertical|center_horizontal"
+                android:paddingBottom="15dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="15dp"
+                android:text="@string/back"
+                android:textColor="#ffffffff"
+                android:textSize="18sp" />
+        </LinearLayout>
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>
