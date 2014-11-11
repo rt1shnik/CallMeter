@@ -18,22 +18,13 @@
  */
 package de.ub0r.android.callmeter.ui;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-
 import android.app.Activity;
-import android.app.AlertDialog.Builder;
-import android.content.ActivityNotFoundException;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
@@ -46,22 +37,21 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 
 import java.util.UnknownFormatConversionException;
 
-import de.ub0r.android.callmeter.CallMeter;
+import de.ub0r.android.callmeter.LogCallStatsService;
 import de.ub0r.android.callmeter.R;
 import de.ub0r.android.callmeter.TrackingUtils;
 import de.ub0r.android.callmeter.data.DataProvider;
-import de.ub0r.android.callmeter.ui.prefs.PlanEdit;
 import de.ub0r.android.callmeter.ui.prefs.Preferences;
 import de.ub0r.android.logg0r.Log;
 
@@ -562,6 +552,9 @@ public final class PlansFragment extends SherlockListFragment implements LoaderC
             now = args.getLong("now", -1L);
             uid = args.getInt("uid", -1);
         }
+
+        Intent intent = new Intent(getActivity(), LogCallStatsService.class);
+        getActivity().startService(intent);
     }
 
     /**
