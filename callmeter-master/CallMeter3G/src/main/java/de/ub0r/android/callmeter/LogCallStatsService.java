@@ -15,20 +15,33 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import de.ub0r.android.callmeter.data.DataProvider;
 import de.ub0r.android.callmeter.ui.Common;
 import de.ub0r.android.logg0r.Log;
 
 public class LogCallStatsService extends Service {
+    protected final static Object lock = new Object();
+    private final static ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS,
+            new LinkedBlockingQueue<Runnable>(128));
+
     private static final long MIN = 1000 * 60;
     private static final long HOUR = MIN * 60;
+    private static final long DAY = 24 * HOUR;
 
     private static LogCallStatsService mInstance;
 
     private static PendingIntent mUpdatePendingIntent;
+    private static HashMap<Long, LogData> mLogDataHashMap = new HashMap<Long, LogData>();
 
     public static class OnMonthInfoLoadComliteListenner implements Loader.OnLoadCompleteListener<Cursor> {
         private long now;
@@ -117,11 +130,12 @@ public class LogCallStatsService extends Service {
 
             }
 
+
+            LogCallStatsService.getInstance().writeToFile(logData);
+
             cursorLoader.unregisterListener(this);
             cursorLoader.stopLoading();
         }
-
-
     }
 
     private static LogCallStatsService getInstance() {
@@ -137,7 +151,7 @@ public class LogCallStatsService extends Service {
         super.onCreate();
         mInstance = this;
 
-        registerNextUpdate();
+        registerNextUpdate(1000);
     }
 
     @Override
@@ -145,13 +159,13 @@ public class LogCallStatsService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void registerNextUpdate() {
+    private void registerNextUpdate(long delayInMillSec) {
         System.out.println("registerUpdate()");
         AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, OnUpdateReceiver.class);
         mUpdatePendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + MIN / 2, mUpdatePendingIntent);
+                SystemClock.elapsedRealtime() + delayInMillSec, mUpdatePendingIntent);
     }
 
 
@@ -252,25 +266,67 @@ public class LogCallStatsService extends Service {
             }
         }
         Common.setDateFormat(this);
-//        final int l = positions.length;
-//        titles = new String[l];
-//        titles[l - 1] = getString(R.string.title_curr);
-
         return positions;
     }
 
-//    @Override
-//    public void onDestroy() {
-//        deleteLoaders();
-//    }
+    private void writeToFile(LogData logData) {
+        File logFolder = new File(getExternalFilesDir(null).getAbsolutePath());
+        if (!logFolder.exists()) {
+            logFolder.mkdirs();
+        }
 
-//    private void deleteLoaders() {
-//        // Stop the cursor loader
-//        for (CursorLoader cursorLoader : mLoadersList) {
-//            cursorLoader.unregisterListener(this);
-//            cursorLoader.cancelLoad();
-//            cursorLoader.stopLoading();
-//            mLoadersList.remove(cursorLoader);
-//        }
-//    }
+        File logFile = new File(logFolder.getPath(), logData.getFileName() + ".txt");
+
+        try {
+            Write(logFile, logData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Write(File file, LogData log) throws Exception {
+
+        CallLogWriteHandler writeHandler = new CallLogWriteHandler(log, file);
+        EXECUTOR.execute(writeHandler);
+    }
+
+    class CallLogWriteHandler implements Runnable {
+        private LogData logData;
+        private File logFile = null;
+
+        public CallLogWriteHandler(LogData logData, File gpxFile) {
+            this.logData = logData;
+            this.logFile = gpxFile;
+        }
+
+
+        @Override
+        public void run() {
+            synchronized (LogCallStatsService.lock) {
+
+                try {
+                    if (!logFile.exists()) {
+                        logFile.createNewFile();
+                    } else {
+                        logFile.delete();
+                        logFile.createNewFile();
+                    }
+
+                    FileOutputStream initialWriter = new FileOutputStream(logFile, true);
+                    BufferedOutputStream initialOutput = new BufferedOutputStream(initialWriter);
+
+                    System.out.println(logData.toString());
+                    initialOutput.write(logData.toString().getBytes());
+                    initialOutput.flush();
+                    initialOutput.close();
+
+
+                } catch (Exception e) {
+                    Log.d("error", e.getMessage());
+                }
+
+            }
+
+        }
+    }
 }

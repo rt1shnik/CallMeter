@@ -482,14 +482,6 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.plans);
 
-        mBackBtn = findViewById(R.id.bottomLayout);
-        mBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
         SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
         if (p.getAll().isEmpty()) {
             // show intro
@@ -552,6 +544,14 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
 
         mTitle = (TextView) findViewById(R.id.title);
         mTitle.setText(R.string.title_curr);
+
+        mBackBtn = findViewById(R.id.bottomLayout);
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Plans.this.finish();
+            }
+        });
     }
 
     /**

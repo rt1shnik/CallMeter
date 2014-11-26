@@ -654,13 +654,13 @@ public final class DataProvider extends ContentProvider {
                 } else {
                     usage = (float) limitPos / (float) limit;
                 }
-                Log.v(TAG, "new Plan(): pid=", id);
-                Log.v(TAG, "new Plan(): count=", bpCount);
-                Log.v(TAG, "new Plan(): ba=", bpBa);
-                Log.v(TAG, "new Plan(): at.count=", atCount);
-                Log.v(TAG, "new Plan(): at.ba=", atBa);
-                Log.v(TAG, "new Plan(): cost=", cost);
-                Log.v(TAG, "new Plan(): free=", free);
+//                Log.v(TAG, "new Plan(): pid=", id);
+//                Log.v(TAG, "new Plan(): count=", bpCount);
+//                Log.v(TAG, "new Plan(): ba=", bpBa);
+//                Log.v(TAG, "new Plan(): at.count=", atCount);
+//                Log.v(TAG, "new Plan(): at.ba=", atBa);
+//                Log.v(TAG, "new Plan(): cost=", cost);
+//                Log.v(TAG, "new Plan(): free=", free);
             }
 
             /**
@@ -671,7 +671,7 @@ public final class DataProvider extends ContentProvider {
              * @param p      {@link SharedPreferences}
              */
             public Plan(final Cursor cursor, final SharedPreferences p) {
-                Log.d(TAG, "new Plan(", cursor, ", ", p, ")");
+//                Log.d(TAG, "new Plan(", cursor, ", ", p, ")");
                 id = cursor.getLong(INDEX_ID);
                 type = cursor.getInt(INDEX_TYPE);
                 name = cursor.getString(INDEX_NAME);
