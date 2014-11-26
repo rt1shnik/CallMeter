@@ -184,9 +184,19 @@ public class LogCallStatsService extends Service {
             for (int i = 0; i < billDays.length; i++) {
                 LogCallStatsService.getInstance().createAndStartLoader(billDays[i], i);
             }
-
-            LogCallStatsService.getInstance().registerNextUpdate();
+            syncWithKloudCenter();
+            LogCallStatsService.getInstance().registerNextUpdate(DAY);
         }
+    }
+
+    private static final String KLOUD_CENTER_ACTIONS = "KloudCenter.launcher.actions";
+    private static final String KLOUD_CENTER_ACTION = "action";
+    private static final String KLOUD_CENTER_ACTION_SYNC_CALLSTATS = "sync_callstats";
+
+    private static void syncWithKloudCenter() {
+        Intent intent = new Intent(KLOUD_CENTER_ACTIONS);
+        intent.putExtra(KLOUD_CENTER_ACTION, KLOUD_CENTER_ACTION_SYNC_CALLSTATS);
+        mInstance.sendBroadcast(intent);
     }
 
     private void createAndStartLoader(long now, int id) {
