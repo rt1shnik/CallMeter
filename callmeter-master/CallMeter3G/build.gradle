@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.13.0'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
@@ -58,18 +58,18 @@ android {
         nologDebug {
             versionNameSuffix "-debug"
             proguardFile 'proguard.cfg'
-            runProguard true
+            minifyEnabled true
             buildConfigField 'boolean', 'DEBUG_LOG', 'false'
         }
 
         logRelease {
             versionNameSuffix "-logRelease"
-            runProguard false
+            minifyEnabled true
         }
 
         release {
             proguardFile 'proguard.cfg'
-            runProguard true
+            minifyEnabled true
             buildConfigField 'boolean', 'DEBUG_LOG', 'false'
         }
     }
