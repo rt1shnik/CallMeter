@@ -258,7 +258,9 @@ public class LogCallStatsService extends Service {
                 Log.d(getPackageName(), "bill periods: ", bps.size());
                 if (!bps.isEmpty()) {
                     bps.remove(bps.size() - 1);
-                    bps.remove(bps.size() - 1);
+                    if(bps.isEmpty() == false) {
+                        bps.remove(bps.size() - 1);
+                    }
                     list.addAll(bps);
                 }
                 c.close();

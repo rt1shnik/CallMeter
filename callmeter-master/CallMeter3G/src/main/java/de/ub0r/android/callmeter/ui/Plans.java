@@ -362,7 +362,9 @@ public final class Plans extends TrackingSherlockFragmentActivity implements OnP
                     Log.d(TAG, "bill periods: ", bps.size());
                     if (!bps.isEmpty()) {
                         bps.remove(bps.size() - 1);
-                        bps.remove(bps.size() - 1);
+                        if(bps.size() > 0) {
+                            bps.remove(bps.size() - 1);
+                        }
                         list.addAll(bps);
                     }
                     c.close();
