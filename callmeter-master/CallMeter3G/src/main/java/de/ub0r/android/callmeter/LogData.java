@@ -16,9 +16,11 @@ public class LogData {
     private long billPeriodEnd;
 
     private String incomingCallsDuration;
+    private long incomingCallsDurationLong;
     private int incomingCallsCount;
 
     private String outcomingCallsDuration;
+    private long outgoingCallsDurationLong;
     private int outcomingCallsCount;
 
     private int smsReceivedCount;
@@ -40,6 +42,15 @@ public class LogData {
 
     public void setIncomingCallsDuration(String incomingCallsDuration) {
         this.incomingCallsDuration = incomingCallsDuration;
+    }
+
+
+    public void setIncomingCallsDuration(long value) {
+        incomingCallsDurationLong = value;
+    }
+
+    public void setOutgoingCallsDuration(long value) {
+        outgoingCallsDurationLong = value;
     }
 
     public void setIncomingCallsCount(int incomingCallsCount) {
@@ -115,6 +126,10 @@ public class LogData {
         return outcomingCallsDuration + "(" + String.valueOf(outcomingCallsCount) + ")";
     }
 
+    private String getCombinedCallsDuration() {
+        return String.valueOf(incomingCallsDurationLong + outgoingCallsDurationLong);
+    }
+
     @Override
     public String toString() {
         StringBuilder initiaalLog = new StringBuilder();
@@ -122,6 +137,7 @@ public class LogData {
         initiaalLog.append("\nBill period:\t").append(getBillPeriod());
         initiaalLog.append("\nIncoming calls:\t").append(getIncomingCallsStat());
         initiaalLog.append("\nOutgoing calls:\t").append(getOutcomingCallsStat());
+        initiaalLog.append("\nCalls duration:\t").append(getCombinedCallsDuration());
         initiaalLog.append("\nSms received:\t").append(smsReceivedCount);
         initiaalLog.append("\nSms sent:\t").append(smsSentCount);
         initiaalLog.append("\nInternet:\t").append(internetValue).append(internetUnits);

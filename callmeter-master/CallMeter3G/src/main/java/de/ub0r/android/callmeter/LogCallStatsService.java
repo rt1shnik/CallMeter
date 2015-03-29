@@ -98,6 +98,7 @@ public class LogCallStatsService extends Service {
                 if (plan.id == 15) {
                     String text = Common.formatAmount(plan.type, plan.bpBa, true);
 //                    text = text + "(" + String.valueOf(plan.bpCount) + ")";
+                    logData.setIncomingCallsDuration((long) plan.bpBa);
                     logData.setIncomingCallsDuration(text);
                     logData.setIncomingCallsCount(plan.bpCount);
 //                mIncomingCalls.setText(text);
@@ -105,6 +106,7 @@ public class LogCallStatsService extends Service {
                 if (plan.id == 16) {
                     String text = Common.formatAmount(plan.type, plan.bpBa, true);
 //                    text = text + "(" + String.valueOf(plan.bpCount) + ")";
+                    logData.setOutgoingCallsDuration((long) plan.bpBa);
                     logData.setOutcomingCallsDuration(text);
                     logData.setOutcomingCallsCount(plan.bpCount);
 //                mOutcomingCalls.setText(text);
