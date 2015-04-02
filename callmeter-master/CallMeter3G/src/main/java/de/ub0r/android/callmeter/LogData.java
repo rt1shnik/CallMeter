@@ -3,6 +3,7 @@ package de.ub0r.android.callmeter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import de.ub0r.android.callmeter.ui.Common;
 
@@ -90,7 +91,7 @@ public class LogData {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(billPeriodStart);
         Date date = calendar.getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM", Locale.ENGLISH);
         String fileName = simpleDateFormat.format(date);
 
         return fileName;
